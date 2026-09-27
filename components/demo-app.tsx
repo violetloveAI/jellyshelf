@@ -48,7 +48,7 @@ export default function DemoApp(){
         <div className="demo-profile-stats"><div><strong>{demoProducts.length}</strong><span>演示藏品</span></div><div><strong>{photoCount}</strong><span>多角度照片</span></div><div><strong>{favorites.length.toString().padStart(2,'0')}</strong><span>本次收藏</span></div></div>
         <button className="demo-menu-row" onClick={()=>{setOnlyFavorites(true);setFamily('全部');setQuery('');changePage('collection');}}><Heart size={20}/><div><strong>我的心头好</strong><span>看看刚刚收藏的伙伴</span></div><ChevronRight size={18}/></button>
         <button className="demo-menu-row" onClick={()=>setAbout(true)}><BookOpen size={20}/><div><strong>关于这个演示</strong><span>图片、示例数据与使用方式</span></div><ChevronRight size={18}/></button>
-        <a className="demo-menu-row" href="./"><Library size={20}/><div><strong>打开本机资料库</strong><span>录入与备份你自己的商品</span></div><ArrowUpRight size={18}/></a>
+        <a className="demo-menu-row" href="./?app=1"><Library size={20}/><div><strong>打开本机资料库</strong><span>录入与备份你自己的商品</span></div><ArrowUpRight size={18}/></a>
         <div className="demo-mine-note">演示收藏仅保留在本次浏览中。<br/>未来的 iOS App 将继续沿用这套设计方向。</div>
       </section>:<main className={page==='live'?'demo-main demo-live':'demo-main'}>
         {!query&&<div className="demo-intro"><div>{page==='live'?<><div className="demo-mini-label">READY WHEN YOU ARE</div><h1>直播查货台<span>.</span></h1><p>品名、货号，一眼找到。</p></>:<><h1>Little things,<br/><em>big love.</em></h1><p>让每一只，都被好好收藏。</p></>}</div><div className="demo-counter"><strong>{demoProducts.length.toString().padStart(2,'0')}</strong><span>位软软伙伴</span></div></div>}
@@ -72,7 +72,7 @@ export default function DemoApp(){
     </div>
     {selected&&<DemoDetail key={selected.id} product={selected} live={page==='live'} favorite={favorites.includes(selected.id)} onFavorite={()=>favorite(selected.id)} onClose={()=>setSelected(null)}/>}
     <PhotoSearch open={camera} demo onClose={()=>setCamera(false)} products={visionProducts} onSelect={p=>{setCamera(false);const match=demoProducts.find(x=>x.id===p.id);if(match)open(match);}}/>
-    <Dialog open={about} onOpenChange={setAbout}><DialogContent className="demo-about"><Flower/><DialogTitle>一间软软的收藏室。</DialogTitle><DialogDescription>这是 JellyShelf 的 A 版移动端演示，延续未来 iOS App 的设计方向。</DialogDescription><div className="demo-about-facts"><p><Check size={17}/> {demoProducts.length} 款官方商品图片，{photoCount} 张多角度照片</p><p><Check size={17}/> 搜索、收藏、图集与直播查货可体验</p><p><Check size={17}/> 演示不会写入你的本机商品库</p></div><p className="demo-about-note">中文名为检索译名。品相、拿货价和目标价为界面示例；首发资料及历史成交未核实时保持留白。图库图片通过 Jellycat 官方图片服务加载，图片版权归其权利人所有。</p><a href="./" className="demo-filled-button">打开我的本机资料库 <ArrowUpRight size={16}/></a></DialogContent></Dialog>
+    <Dialog open={about} onOpenChange={setAbout}><DialogContent className="demo-about"><Flower/><DialogTitle>一间软软的收藏室。</DialogTitle><DialogDescription>这是 JellyShelf 的 A 版移动端演示，延续未来 iOS App 的设计方向。</DialogDescription><div className="demo-about-facts"><p><Check size={17}/> {demoProducts.length} 款官方商品图片，{photoCount} 张多角度照片</p><p><Check size={17}/> 搜索、收藏、图集与直播查货可体验</p><p><Check size={17}/> 演示不会写入你的本机商品库</p></div><p className="demo-about-note">中文名为检索译名。品相、拿货价和目标价为界面示例；首发资料及历史成交未核实时保持留白。图库图片通过 Jellycat 官方图片服务加载，图片版权归其权利人所有。</p><a href="./?app=1" className="demo-filled-button">打开我的本机资料库 <ArrowUpRight size={16}/></a></DialogContent></Dialog>
   </div>;
 }
 

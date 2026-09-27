@@ -39,5 +39,42 @@ export function blankVariant():Variant{return {id:crypto.randomUUID(),sku:'',siz
 export function blankProduct():Product{return {id:crypto.randomUUID(),nameEn:'',nameZh:'',category:'公仔',photos:[],releaseDate:'',releasePrice:null,officialStatus:'',sourceUrl:'',notes:'',variants:[blankVariant()],sales:[],revision:0};}
 export function missingFields(p:Product){const official=p.variants.map(v=>officialFor(p,v));return [official.some(o=>!o.releaseDate)&&'发售时间',official.some(o=>o.releasePrice===null)&&'首发定价',official.some(o=>!o.officialStatus)&&'官方状态',!p.photos.length&&'照片',p.variants.some(v=>!v.sku)&&'货号',p.variants.some(v=>!v.condition)&&'品相'].filter(Boolean) as string[];}
 export function saleKey(url:string,platform:string){const u=new URL(url);const parts=u.pathname.split('/').filter(Boolean);const id=platform==='ebay'?parts[0]==='itm'?parts.at(-1):null:parts[0]==='listing'?parts[1]:null;return platform+'|'+(id||u.hostname.replace(/^www\./,'')+u.pathname.replace(/\/$/,''));}
-export function officialFor(p:Product,v:Variant):Pick<Product,'releaseDate'|'releasePrice'|'officialStatus'|'sourceUrl'>{const group=p.variants.filter(x=>v.sku?x.sku.trim().toLowerCase()===v.sku.trim().toLowerCase():x.id===v.id);const explicit=group.find(x=>x.releasePrice!==undefined);if(explicit)return {releaseDate:explicit.releaseDate||'',releasePrice:explicit.releasePrice??null,officialStatus:explicit.officialStatus||'',sourceUrl:explicit.sourceUrl||''};if(v.sku===p.variants[0]?.sku)return {releaseDate:p.releaseDate,releasePrice:p.releasePrice,officialStatus:p.officialStatus,sourceUrl:p.sourceUrl};return {releaseDate:'',releasePrice:null,officialStatus:'',sourceUrl:''};}
-export function normalizeProduct(p:Product):Product{return {...p,variants:p.variants.map(v=>({...v,...officialFor(p,v)}))};}
+type OfficialFacts=Pick<Product,'releaseDate'|'releasePrice'|'officialStatus'|'sourceUrl'>;
+const skuKey=(sku:string)=>sku.trim().toLowerCase();
+const emptyOfficial=():OfficialFacts=>({releaseDate:'',releasePrice:null,officialStatus:'',sourceUrl:''});
+export type SkuEdit={variantId:string;originalSku:string};
+/** Capture primitive values: form libraries may mutate the original object while typing. */
+export function beginSkuEdit(p:Product,variantId:string):SkuEdit|undefined{
+ const variant=p.variants.find(v=>v.id===variantId);
+ return variant?{variantId,originalSku:variant.sku}:undefined;
+}
+/** Resolve the final SKU once, on blur or submit, preserving all other current form edits. */
+export function commitSkuEdit(p:Product,edit?:SkuEdit):Product{
+ if(!edit)return normalizeProduct(p);
+ const before={...p,variants:p.variants.map(v=>v.id===edit.variantId?{...v,sku:edit.originalSku}:v)};
+ return normalizeProduct(p,before);
+}
+export function officialFor(p:Product,v:Variant):OfficialFacts{
+ const sku=skuKey(v.sku);
+ const group=p.variants.filter(x=>sku?skuKey(x.sku)===sku:x.id===v.id);
+ // Any confirmed field can establish a SKU's facts; an unknown price is valid.
+ const explicit=group.find(x=>x.releaseDate!==undefined||x.releasePrice!==undefined||x.officialStatus!==undefined||x.sourceUrl!==undefined);
+ if(explicit)return {releaseDate:explicit.releaseDate||'',releasePrice:explicit.releasePrice??null,officialStatus:explicit.officialStatus||'',sourceUrl:explicit.sourceUrl||''};
+ if(v.id===p.variants[0]?.id||(sku&&sku===skuKey(p.variants[0]?.sku||'')))return {releaseDate:p.releaseDate,releasePrice:p.releasePrice,officialStatus:p.officialStatus,sourceUrl:p.sourceUrl};
+ return emptyOfficial();
+}
+/** Pass the form state immediately before a SKU edit to preserve both SKU groups. */
+export function normalizeProduct(p:Product,beforeSkuEdit?:Product):Product{
+ const variants=beforeSkuEdit?p.variants.map(v=>{
+  const prior=beforeSkuEdit.variants.find(x=>x.id===v.id);
+  if(!prior)return v;
+  const sku=skuKey(v.sku),previousSku=skuKey(prior.sku);
+  if(sku===previousSku)return {...v,...officialFor(beforeSkuEdit,prior)};
+  const target=sku?beforeSkuEdit.variants.find(x=>x.id!==v.id&&skuKey(x.sku)===sku):undefined;
+  // Joining a known SKU adopts its facts. A new SKU cannot inherit the old one's facts.
+  const facts=target?officialFor(beforeSkuEdit,target):previousSku?emptyOfficial():officialFor(beforeSkuEdit,prior);
+  return {...v,...facts};
+ }):p.variants;
+ const current={...p,variants};
+ return {...current,variants:variants.map(v=>({...v,...officialFor(current,v)}))};
+}
