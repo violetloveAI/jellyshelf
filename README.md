@@ -2,7 +2,7 @@
 
 用于直播查货的 Jellycat 商品资料库。采用奶油色移动界面，支持按名称、货号或照片查找自己录入的商品。
 
-计划发布至 [violetloveAI.github.io/jellyshelf](https://violetloveAI.github.io/jellyshelf/)。**当前链接待实际发布验证。** 网站无需登录。商品资料和上传的照片保存在当前浏览器的 IndexedDB 中，不支持云同步。
+在线试用：[JellyShelf](https://violetloveai.github.io/jellyshelf/)。 网站无需登录。商品资料和上传的照片保存在当前浏览器的 IndexedDB 中，不支持云同步。
 
 <img src="docs/preview.jpg" alt="JellyShelf 手机界面" width="390">
 
