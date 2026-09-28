@@ -1,0 +1,9 @@
+Use case: logo-brand
+Asset type: Production iOS app icon for an independent plush collection catalogue app named JellyShelf.
+Primary request: Create one exceptionally polished, original 1024 by 1024 square app icon. The entire square is the artwork, full bleed.
+Subject: A single original cream-colored lop-eared rabbit mascot peeking contentedly out of a simple warm terracotta open-front collector's cubby. The rabbit has two rounded hanging ears, a generously rounded head, two tiny dark cocoa eyes, a small subtle oval nose and a very restrained welcoming expression. Show head and two paws resting on the thick lower shelf ledge. The cubby is one simple architectural shape like a softly arched niche, with no other compartments or items. Create a distinctive independent character, not an existing branded toy.
+Style/medium: Sophisticated tactile 3D editorial illustration with softly rounded sculptural forms, finely flocked velvety rabbit material, matte ceramic terracotta niche, minimal and warm. Premium iOS icon design, tasteful and calm rather than busy.
+Composition: Bold centered silhouette; the rabbit and niche occupy about 76 percent of the square width and 78 percent of the height. Clear at small app-icon size. Shelf integrated with the rabbit as one memorable emblem. Frontal near-orthographic view, subtle soft contact shadows, no dramatic perspective.
+Backdrop: Solid warm pale ivory cream background reaching every edge. Soft diffuse warm light from upper left. Restrained palette of ivory, caramel, terracotta clay, cocoa brown.
+Text: none.
+Constraints: Output an opaque square image. No rounded outer corners, no white margins, no icon mockup frame, no device mockup, no typography, no letters, no numbers, no watermark, no border. Do not depict the Jellycat logo, a cat-head logo, recognizable branded packaging, or any existing product design. Avoid visual clutter and tiny ornamental details. Exactly one icon.

@@ -3,7 +3,7 @@ import CoreGraphics
 import ImageIO
 import UniformTypeIdentifiers
 
-// Original JellyShelf four-petal mark; contains no third-party product photography.
+// The launch screen uses the original four-petal mark.
 func image(size: Int, flowerScale: CGFloat, path: String) throws {
     // An opaque Core Graphics surface also works in headless build environments.
     let context = CGContext(data: nil, width: size, height: size,
@@ -32,8 +32,24 @@ func image(size: Int, flowerScale: CGFloat, path: String) throws {
 }
 
 let root = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "."
-try image(size: 1024, flowerScale: 0.83,
-    path: "\(root)/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png")
+// Generate platform sizes from the original imagegen artwork, preserving its composition.
+let iconSource = "\(root)/output/imagegen/jellyshelf-bunny-cubby-v1.png"
+guard FileManager.default.fileExists(atPath: iconSource) else {
+    fatalError("Missing original App icon: \(iconSource)")
+}
+for (size, target) in [
+    (1024, "ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png"),
+    (512, "public/icon-512.png"),
+    (192, "public/icon-192.png"),
+    (180, "public/apple-touch-icon.png")
+] {
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: "/usr/bin/sips")
+    task.arguments = ["-z", "\(size)", "\(size)", iconSource, "--out", "\(root)/\(target)"]
+    try task.run()
+    task.waitUntilExit()
+    guard task.terminationStatus == 0 else { throw CocoaError(.fileWriteUnknown) }
+}
 for filename in ["splash-2732x2732.png", "splash-2732x2732-1.png", "splash-2732x2732-2.png"] {
     try image(size: 2732, flowerScale: 0.42,
         path: "\(root)/ios/App/App/Assets.xcassets/Splash.imageset/\(filename)")
