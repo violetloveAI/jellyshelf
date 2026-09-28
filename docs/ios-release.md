@@ -1,6 +1,6 @@
 # JellyShelf · iOS / TestFlight 发布准备
 
-更新：2026-09-27。`1.0.0 (2)` 已完成签名归档，并于北京时间 22:17:45（CST，UTC+8）上传 Apple 成功，日志显示 `Upload succeeded` / `EXPORT SUCCEEDED`；上传回执为 processing，后续处理完成状态未核实。完整软件键盘问题已修复，并在最终无调试代码的包中复测通过。App Store Connect 的 JellyShelf 简体中文应用记录 ID 为 `6816674454`。尚未提交 TestFlight 外测审核、邀请测试者或正式 App Store 审核，应用未上架。源代码提交 `f4329a5` 已推送到 `origin/main`，Pages 部署成功，个人图册、隐私和支持 URL 均已核实返回 HTTP 200。
+更新：2026-09-28。带原创兔子图标的 `1.0.0 (3)` 已完成签名归档，并于北京时间 19:05:36（CST，UTC+8）上传 Apple 成功，日志显示 `Upload succeeded` / `EXPORT SUCCEEDED`；上传回执为 processing，后续处理完成状态未核实。此前 build 2 已完成完整软件键盘问题修复和模拟器复测。App Store Connect 的 JellyShelf 简体中文应用记录 ID 为 `6816674454`。用户已报告登录成功，地址进入 `/apps`，但代理读取后台页面持续超时；不能将此当成登录失败。尚未提交 TestFlight 外测审核、邀请测试者或正式 App Store 审核，应用未上架。图标提交 `11660f1` 已推送到 `origin/main`，Pages CI `36413425715` 部署成功，线上新图标字节与本地一致。
 
 ## 1. 当前版本与功能边界
 
@@ -10,7 +10,7 @@
 | App Store Connect App ID | `6816674454`（应用记录已创建，不代表已上架） |
 | Bundle ID | `com.violetloveai.jellyshelf` |
 | Xcode 项目 / Scheme | `ios/App/App.xcodeproj` / `App` |
-| 原生版本 / 构建号 | 最新 `1.0.0 (2)` 已上传 Apple；上传回执为 processing，后续处理完成状态未核实；build 1 保留为此前上传记录 |
+| 原生版本 / 构建号 | 最新 `1.0.0 (3)` 已上传 Apple；上传回执为 processing，后续处理完成状态未核实；build 1 / 2 保留为此前上传记录 |
 | npm 包版本 | `0.2.0`，不等于 App Store 版本 |
 | 最低系统配置 | iOS 15.0；实际发布兼容性以最终归档和验收为准 |
 | 收费 / 登录 | 免费，无 JellyShelf 账号，无应用内购买 |
@@ -235,13 +235,13 @@ curl --fail --location --head https://violetloveai.github.io/jellyshelf/support.
 
 ## 7. 阶段验收记录
 
-已通过项依据 2026-09-27 主任务提供的实际验收结果记录。原生验收使用 iPhone 17 Pro / iOS 26.5 模拟器；浏览器验收单独注明。最终 build 2 已成功归档并上传，上传回执为 processing，后续处理完成状态未核实；build 1 的独立 Xcode Validate 结果保留为历史证据。上传成功不代表已获准外测，模拟器结果不能替代实机相机或真实 TestFlight 安装结果。
+以下交互验收依据 2026-09-27 的实际结果，使用 iPhone 17 Pro / iOS 26.5 模拟器；浏览器验收单独注明。2026-09-28 新增 build 3 图标资源检查、测试、构建与上传结果。最新 build 3 上传回执为 processing，后续处理完成状态未核实；build 1 的独立 Xcode Validate 结果保留为历史证据。上传成功不代表已获准外测，模拟器结果不能替代实机相机或真实 TestFlight 安装结果。
 
 | 项目 | 状态 | 构建 / 设备 / 证据 |
 | --- | --- | --- |
 | 单元测试 | 通过 | 26 项测试全部通过；主任务验收回报 |
 | 生产依赖审计 | 通过 | audit 发现 0 项漏洞；仅指本次生产依赖审计范围 |
-| 网页与原生构建 | 最终构建通过 | web / native build 均成功；build 2 已成功归档并上传 |
+| 网页与原生构建 | 最终构建通过 | 2026-09-28 web / native build 均成功；build 3 已成功归档并上传 |
 | 空库、商品保存与展示 | 模拟器通过 | iPhone 17 Pro / iOS 26.5 |
 | 键盘附件栏下编辑框安全区 | 模拟器通过 | iPhone 17 Pro / iOS 26.5 |
 | 完整软件键盘下焦点字段可见性 | 最终无调试包复测通过 | 输入框和保存按钮同时可见；根因涉及 `transition: all 0.2s`，已限制为 opacity / transform 并加入 ResizeObserver 与有界 settle |
@@ -273,9 +273,18 @@ curl --fail --location --head https://violetloveai.github.io/jellyshelf/support.
 | build 1 上传 Apple | 成功 | 2026-09-27 21:58 CST（UTC+8）；日志 `Upload succeeded` / `EXPORT SUCCEEDED`；Organizer 显示 `Uploaded to Apple` |
 | build 2 上传 Apple | 成功 | 2026-09-27 22:17:45 CST（UTC+8）；日志 `Upload succeeded` / `EXPORT SUCCEEDED`；archive 2 的 Info.plist / Distributions 记录 `adamId=6816674454`、`uploadedBuildNumber=2`、`uploadEvent.state=success` |
 | Apple build 2 处理与可测试状态 | 上传回执为 processing | 后续处理完成与可测试状态未核实 |
-| App Store Connect 网页会话 | 当前不可用 | IAB 持续 `authResult=FAILED`，页面不可用，已知应用 URL 也超时；这是平台登录会话未可用，不是等待用户再次授权 |
-| TestFlight 外测审核 | 尚未提交 | build 2 已上传，但尚未提交外测审核 |
+| build 3 图标、签名归档与上传 | 成功 | 2026-09-28 19:05:36 CST；archive、codesign 验证通过，上传日志显示 `Upload succeeded` / `EXPORT SUCCEEDED`；回执为 processing，尚未核实可测试状态 |
+| App Store Connect 网页控制 | 页面读取超时 | 2026-09-28 用户报告登录成功，浏览器地址已进入 `/apps`；DOM 和辅助功能读取均超时，不能以此断定登录失败。需恢复浏览器读取连接后核对平台状态，无需重复索要上架授权 |
+| TestFlight 外测审核 | 尚未提交 | build 3 已上传，但尚未提交外测审核 |
 | 测试邀请 / TestFlight 实际安装 | 尚未邀请 | 等待构建可测试后的实际结果 |
 | App Store 审核 / 公开上架 | 待后续实际提交 | 待填 |
 
 后续填写模板：`日期；提交版本与构建号；设备与系统；步骤；实际结果；脱敏日志或截图路径；未解决限制`。不要用预期结果填充“实际结果”。
+
+## 8. 原创 App 图标（2026-09-28）
+
+用户授权自主设计头像后，使用内置 imagegen 生成奶油色垂耳兔与陶土收藏格图标。原始图像与完整提示词保存在 `output/imagegen/jellyshelf-bunny-cubby-v1.png` 和同名 `.prompt.txt`；未使用品牌标志或现有商品照片。内置工具输出 1254 × 1254、无 alpha 的 PNG，经 `scripts/generate-ios-art.swift` 调用 macOS `sips` 生成 iOS 1024、网页 192 / 512 和 Apple Touch 180 像素资源，均无 alpha。系统负责原生图标圆角裁切；源图保持完整方形。
+
+新图标已接入 Xcode AppIcon、网页 favicon、manifest 与 Apple Touch 图标。启动页仍保留四瓣花标记。资源提交 `11660f1` 已推送到 `origin/main`。本轮 26 项测试、网页构建、原生构建与同步、build 3 签名归档及 `codesign --verify --deep --strict` 均通过；图片尺寸、透明度及资源路径已独立复核。本次只变更视觉资源、构建号与资源生成脚本，没有新增库存或行情功能，也没有将先前待完成的实机测试标为通过。
+
+Pages CI `36413425715` 已 completed / success，线上 `icon-192.png` 与本地文件逐字节相同，线上 manifest 已引用 192 / 512 PNG。build 3 上传日志为 `/tmp/jellyshelf-upload3.log`，归档为 `artifacts/JellyShelf-1.0.0-3.xcarchive`。页面读取仍不可用，因此没有声称构建已可测试、已提交审核或已发送邀请。
